@@ -1,0 +1,13 @@
+enum MembershipRole {
+  OWNER
+  BARBER
+  STAFF
+}
+
+enum AppointmentStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+  COMPLETED
+  NO_SHOW
+}

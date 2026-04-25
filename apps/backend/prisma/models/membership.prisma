@@ -1,0 +1,17 @@
+model Membership {
+  id        String         @id @default(uuid())
+  userId    String
+  tenantId  String
+  role      MembershipRole @default(BARBER)
+  createdAt DateTime       @default(now())
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  appointments   Appointment[]   @relation("BarberAppointments")
+  portfolioPosts PortfolioPost[]
+
+  @@unique([userId, tenantId])
+  @@index([tenantId])
+  @@index([userId])
+}
