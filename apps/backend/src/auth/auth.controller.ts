@@ -122,6 +122,9 @@ export class AuthController {
     };
   }
 
+  @Post('test commit no pr')
+  async test() {}
+
   @Post('logout')
   async logout(@Req() req: Request, @Res({ passthrough: true }) res: Response) {
     const headers = new Headers();
