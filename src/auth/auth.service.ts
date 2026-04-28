@@ -194,28 +194,31 @@ export class AuthService {
   }
 
   async getSession(headers: Headers) {
-    const result = await this.auth.api.getSession({ headers });
+    const result = await this.auth.api.getSession({
+      headers,
+      returnHeaders: true,
+    });
+
+    if (!result?.response?.user.id) {
+      return null;
+    }
 
     const user = await this.prisma.user.findUnique({
       where: {
-        id: result?.user.id,
+        id: result.response.user.id,
       },
-      select: {
-        tenant: {
+      include: {
+        tenant: true,
+        memberships: {
           select: {
-            slug: true,
+            role: true,
           },
         },
+        customer: true,
       },
     });
 
-    return {
-      ...result,
-      user: {
-        ...result?.user,
-        slug: user?.tenant?.slug,
-      },
-    };
+    return user;
   }
 
   generateTenantSlug(name: string) {

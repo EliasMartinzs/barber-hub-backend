@@ -16,7 +16,7 @@ import { RequestResetPasswordDto } from 'src/auth/dto/request-reset-password.dto
 import { ResetPasswordDto } from 'src/auth/dto/reset-password.dto';
 import { SendVerificationDto } from 'src/auth/dto/send-verification.dto';
 import { LoginResponse } from 'src/auth/types/login-response';
-import { SessionResponse } from 'src/auth/types/session-response';
+import { UserResponse } from 'src/auth/types/user-response';
 import { AUTH_INSTANCE } from 'src/common/auth/auth';
 import { AuthService } from './auth.service';
 
@@ -113,12 +113,14 @@ export class AuthController {
   }
 
   @Get('me')
-  async me(@Req() req: Request): Promise<SessionResponse> {
+  async me(@Req() req: Request): Promise<UserResponse | null> {
     const headers = new Headers();
     const cookie = req.headers.cookie;
+
     if (cookie) headers.set('cookie', cookie);
 
-    return await this.authService.getSession(headers);
+    const user = await this.authService.getSession(headers);
+    return user;
   }
 
   @All('*')

@@ -60,11 +60,11 @@ export const createAuth = (prisma: PrismaService, mailService: MailService) =>
     },
     advanced: {
       cookies: {
-        sessionToken: {
-          name: 'yourapp.session',
+        session_token: {
+          name: 'better-auth.session_token',
           options: {
             httpOnly: true,
-            sameSite: '1max',
+            sameSite: 'none',
             secure: process.env.NODE_ENV === 'production',
             path: '/',
           },
