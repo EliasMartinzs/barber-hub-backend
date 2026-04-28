@@ -16,6 +16,7 @@ import { RequestResetPasswordDto } from 'src/auth/dto/request-reset-password.dto
 import { ResetPasswordDto } from 'src/auth/dto/reset-password.dto';
 import { SendVerificationDto } from 'src/auth/dto/send-verification.dto';
 import { LoginResponse } from 'src/auth/types/login-response';
+import { SessionResponse } from 'src/auth/types/session-response';
 import { AUTH_INSTANCE } from 'src/common/auth/auth';
 import { AuthService } from './auth.service';
 
@@ -45,6 +46,14 @@ export class AuthController {
 
     const setCookie = result.headers.get('set-cookie');
     if (setCookie) res.setHeader('set-cookie', setCookie);
+
+    res.cookie('tenant_slug', result.user.slug, {
+      httpOnly: false,
+      sameSite: 'lax',
+      secure: process.env.NODE_ENV === 'production',
+      path: '/',
+      maxAge: 1000 * 60 * 60 * 24 * 7,
+    });
 
     return {
       user: result.user,
@@ -104,7 +113,7 @@ export class AuthController {
   }
 
   @Get('me')
-  async me(@Req() req: Request) {
+  async me(@Req() req: Request): Promise<SessionResponse> {
     const headers = new Headers();
     const cookie = req.headers.cookie;
     if (cookie) headers.set('cookie', cookie);

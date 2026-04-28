@@ -40,7 +40,7 @@ export const authErrorMap: Record<ERROR_CODES[keyof ERROR_CODES], string> = {
   ID_TOKEN_NOT_SUPPORTED: 'ID token não suportado',
   FAILED_TO_GET_USER_INFO: 'Falha ao obter informações do usuário',
   USER_EMAIL_NOT_FOUND: 'Email do usuário não encontrado',
-  EMAIL_NOT_VERIFIED: 'Email não verificado',
+  EMAIL_NOT_VERIFIED: 'Por favor verifique seu email',
   PASSWORD_TOO_SHORT: 'Senha muito curta',
   PASSWORD_TOO_LONG: 'Senha muito longa',
   USER_ALREADY_EXISTS: 'Usuário já existe',

@@ -3,6 +3,7 @@ import {
   HttpException,
   Inject,
   Injectable,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { APIError } from 'better-auth/api';
 import slugify from 'slugify';
@@ -97,6 +98,12 @@ export class AuthService {
         },
       });
 
+      if (!user?.tenant?.slug) {
+        throw new UnauthorizedException(
+          'Usuário não possui uma barbearia associada',
+        );
+      }
+
       return {
         headers: result.headers,
         user: {
@@ -110,7 +117,7 @@ export class AuthService {
 
         const message = authErrorMap[code] ?? 'Erro inesperado';
 
-        throw new HttpException({ message }, e.statusCode ?? 400);
+        throw new HttpException({ message, code }, e.statusCode ?? 400);
       }
 
       throw e;
@@ -187,7 +194,28 @@ export class AuthService {
   }
 
   async getSession(headers: Headers) {
-    return await this.auth.api.getSession({ headers });
+    const result = await this.auth.api.getSession({ headers });
+
+    const user = await this.prisma.user.findUnique({
+      where: {
+        id: result?.user.id,
+      },
+      select: {
+        tenant: {
+          select: {
+            slug: true,
+          },
+        },
+      },
+    });
+
+    return {
+      ...result,
+      user: {
+        ...result?.user,
+        slug: user?.tenant?.slug,
+      },
+    };
   }
 
   generateTenantSlug(name: string) {
