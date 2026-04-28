@@ -7,9 +7,16 @@ import { AuthMiddleware } from './common/auth/auth.middleware';
 import { PrismaModule } from './common/prisma/prisma.module';
 import { PrismaService } from './common/prisma/prisma.service';
 import { MailModule } from './mail/mail.module';
+import { ServiceModule } from './service/service.module';
 
 @Module({
-  imports: [ConfigModule.forRoot(), AuthModule, PrismaModule, MailModule],
+  imports: [
+    ConfigModule.forRoot(),
+    AuthModule,
+    PrismaModule,
+    MailModule,
+    ServiceModule,
+  ],
   controllers: [AppController],
   providers: [AppService, PrismaService],
 })
