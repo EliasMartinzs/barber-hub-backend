@@ -1,5 +1,12 @@
 enum MembershipRole {
   OWNER
   BARBER
-  STAFF
+}
+
+enum AppointmentStatus {
+  SCHEDULED // agendado
+  CONFIRMED // confirmado
+  COMPLETED // finalizado
+  CANCELED // cancelado
+  NO_SHOW // cliente não apareceu
 }

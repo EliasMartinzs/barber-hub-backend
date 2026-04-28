@@ -10,8 +10,7 @@ model Tenant {
   services       Service[]
   portfolioPosts PortfolioPost[]
 
-  ownerId String @unique
-  owner   User   @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  appointments Appointment[]
 
   @@map("tenant")
 }

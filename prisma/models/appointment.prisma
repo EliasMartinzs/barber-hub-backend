@@ -1,0 +1,28 @@
+model Appointment {
+  id         String @id @default(uuid())
+  tenantId   String
+  customerId String
+  barberId   String
+
+  startAt DateTime
+  endAt   DateTime
+
+  status AppointmentStatus @default(SCHEDULED)
+
+  totalPrice Decimal @db.Decimal(10, 2)
+
+  notes String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  tenant   Tenant     @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  customer Customer   @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  barber   Membership @relation(fields: [barberId], references: [id], onDelete: Cascade)
+
+  services AppointmentService[]
+
+  @@index([tenantId])
+  @@index([barberId])
+  @@index([startAt])
+}

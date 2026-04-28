@@ -1,14 +1,14 @@
 model Membership {
   id       String         @id @default(uuid())
-  userId   String
+  userId   String         @unique
   tenantId String
   role     MembershipRole
 
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
 
-  createdAt DateTime @default(now())
+  createdAt    DateTime      @default(now())
+  appointments Appointment[]
 
-  @@unique([userId, tenantId])
   @@index([tenantId])
 }

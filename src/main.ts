@@ -9,6 +9,8 @@ async function bootstrap() {
     bodyParser: false,
   });
 
+  app.setGlobalPrefix('api');
+
   app.use(express.json());
 
   app.enableCors({

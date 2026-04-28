@@ -20,8 +20,8 @@ import { UserResponse } from 'src/auth/types/user-response';
 import { AUTH_INSTANCE } from 'src/common/auth/auth';
 import { AuthService } from './auth.service';
 
-@ApiTags('api/auth')
-@Controller('api/auth')
+@ApiTags('auth')
+@Controller('auth')
 export class AuthController {
   constructor(
     private readonly authService: AuthService,

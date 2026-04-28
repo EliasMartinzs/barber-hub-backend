@@ -45,7 +45,6 @@ export class AuthService {
           data: {
             name: body.tenantName,
             slug: this.generateTenantSlug(body.tenantName),
-            ownerId: user.user.id,
           },
         });
 
@@ -90,15 +89,19 @@ export class AuthService {
           id: result.response.user.id,
         },
         select: {
-          tenant: {
+          memberships: {
             select: {
-              slug: true,
+              tenant: {
+                select: {
+                  slug: true,
+                },
+              },
             },
           },
         },
       });
 
-      if (!user?.tenant?.slug) {
+      if (!user?.memberships[0].tenant.slug) {
         throw new UnauthorizedException(
           'Usuário não possui uma barbearia associada',
         );
@@ -108,7 +111,7 @@ export class AuthService {
         headers: result.headers,
         user: {
           ...result.response.user,
-          slug: user?.tenant?.slug,
+          slug: user?.memberships[0].tenant.slug,
         },
       };
     } catch (e) {
@@ -208,10 +211,10 @@ export class AuthService {
         id: result.response.user.id,
       },
       include: {
-        tenant: true,
         memberships: {
           select: {
             role: true,
+            tenant: true,
           },
         },
         customer: true,
