@@ -30,7 +30,7 @@ export class CreateServiceDto {
 
   @IsString()
   @IsOptional()
-  imageUrl!: string;
+  imageKey!: string;
 
   @IsInt()
   @IsNotEmpty()

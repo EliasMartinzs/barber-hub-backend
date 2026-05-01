@@ -30,7 +30,7 @@ export class UploadService {
       ? fileName.replace(/\s+/g, '-')
       : `${randomUUID()}.${extension}`;
 
-    const key = `${folder}/${randomUUID()}-${safeFileName}`;
+    const key = `tmp/${folder}/${randomUUID()}-${safeFileName}`;
 
     const command = new PutObjectCommand({
       Bucket: process.env.AWS_BUCKET!,

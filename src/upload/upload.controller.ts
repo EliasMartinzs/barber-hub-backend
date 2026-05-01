@@ -1,4 +1,12 @@
-import { Controller, Delete, Get, Query, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Post,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 import { AuthGuard } from 'src/common/auth/guards/auth.guard';
 import { GetPresignedUrlDto } from 'src/upload/dto/get-presignedurl.dto';
 import { UploadService } from './upload.service';
@@ -21,6 +29,11 @@ export class UploadController {
   @UseGuards(AuthGuard)
   @Delete('file')
   deleteFile(@Query('key') key: string) {
+    return this.uploadService.deleteFile(key);
+  }
+
+  @Post('cleanup')
+  cleanup(@Body('key') key: string) {
     return this.uploadService.deleteFile(key);
   }
 }

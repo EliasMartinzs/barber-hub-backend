@@ -1,6 +1,8 @@
+import { CopyObjectCommand, DeleteObjectCommand } from '@aws-sdk/client-s3';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { handlePrismaError } from 'src/common/prisma/errors/handle-prisma-error';
 import { PrismaService } from 'src/common/prisma/prisma.service';
+import { s3Client } from 'src/common/S3/s3.service';
 import { CreateServiceDto } from 'src/service/dto/create-service.dto';
 import { EditServiceDto } from 'src/service/dto/edit-service.dto';
 
@@ -68,10 +70,39 @@ export class ServiceService {
 
   async createService(tenantId: string, service: CreateServiceDto) {
     try {
+      let newImageUrl = service.imageKey;
+
+      if (service.imageKey?.startsWith('tmp/')) {
+        const newKey = service.imageKey.replace('tmp/', '');
+
+        await s3Client.send(
+          new CopyObjectCommand({
+            Bucket: process.env.AWS_BUCKET!,
+            CopySource: `${process.env.AWS_BUCKET}/${service.imageKey}`,
+            Key: newKey,
+          }),
+        );
+
+        await s3Client.send(
+          new DeleteObjectCommand({
+            Bucket: process.env.AWS_BUCKET!,
+            Key: service.imageKey,
+          }),
+        );
+
+        newImageUrl = `${process.env.AWS_PUBLIC_URL}/${newKey}`;
+      }
+
       return await this.prisma.service.create({
         data: {
           tenantId,
-          ...service,
+          name: service.name,
+          description: service.description,
+          price: service.price,
+          durationInMinutes: service.durationInMinutes,
+          isActive: service.isActive,
+          order: service.order,
+          imageUrl: newImageUrl,
         },
       });
     } catch (e) {
